@@ -39,7 +39,6 @@ public class FuncionarioController {
         return "redirect:/funcionarios";
     }
 
-    // Mostrar detalhes de um funcionário
     @GetMapping("/{id}")
     public String detalhesFuncionario(@PathVariable Long id, Model model) {
         Funcionario funcionario = funcionarioService.findById(id);
@@ -64,6 +63,12 @@ public class FuncionarioController {
     @PostMapping("/{id}/editar")
     public String atualizarFuncionario(@PathVariable Long id, @ModelAttribute FuncionarioDTO funcionarioDTO) {
         funcionarioService.update(id, funcionarioDTO);
+        return "redirect:/funcionarios";
+    }
+
+    @PostMapping("/{id}/deletar")
+    public String deletarFuncionario(@PathVariable Long id) {
+        funcionarioService.delete(id);
         return "redirect:/funcionarios";
     }
 

@@ -39,37 +39,47 @@ public class FuncionarioService {
         return funcionario;
     }
 
-    // Buscar um funcionário por ID
     public Funcionario findById(Long id) {
         Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
         return funcionario.orElse(null);
     }
 
-    // Listar todos os funcionários
     public List<Funcionario> findAll() {
         return funcionarioRepository.findAll();
     }
 
-    // Atualizar um funcionário existente
     public Funcionario update(Long id, FuncionarioDTO funcionarioDTO) {
         Funcionario funcionarioExistente = findById(id);
         if (funcionarioExistente != null) {
-            Funcionario funcionarioAtualizado = converterDTOParaFuncionario(funcionarioDTO);
-            funcionarioAtualizado.setId(id);
-            funcionarioAtualizado = funcionarioRepository.save(funcionarioAtualizado);
+            // Atualiza os dados do funcionário
+            funcionarioExistente.setNome(funcionarioDTO.getNome());
+            funcionarioExistente.setCargo(funcionarioDTO.getCargo());
+            funcionarioExistente.setSalario(funcionarioDTO.getSalario());
+            funcionarioExistente.setCpf(funcionarioDTO.getCpf());
+            funcionarioExistente.setDataNascimento(funcionarioDTO.getDataNascimento());
+            funcionarioExistente.setEmail(funcionarioDTO.getEmail());
+            funcionarioRepository.save(funcionarioExistente);
 
-            // Atualizar dependentes se existirem
+            // Remove dependentes antigos
+            dependenteRepository.deleteByFuncionarioId(id);
+
+            // Adiciona os novos dependentes
             if (funcionarioDTO.getDependentes() != null) {
-                dependenteRepository.deleteByFuncionarioId(id); // Remove dependentes antigos
                 for (DependenteDTO dependenteDTO : funcionarioDTO.getDependentes()) {
                     Dependente dependente = converterDTOParaDependente(dependenteDTO);
-                    dependente.setFuncionario(funcionarioAtualizado);
+                    dependente.setFuncionario(funcionarioExistente);
                     dependenteRepository.save(dependente);
                 }
             }
-            return funcionarioAtualizado;
         }
-        return null;
+        return funcionarioExistente;
+    }
+
+    public void delete(Long id) {
+        // Remove dependentes associados ao funcionário
+        dependenteRepository.deleteByFuncionarioId(id);
+        // Remove o funcionário
+        funcionarioRepository.deleteById(id);
     }
 
     private Funcionario converterDTOParaFuncionario(FuncionarioDTO funcionarioDTO) {

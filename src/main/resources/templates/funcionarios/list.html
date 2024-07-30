@@ -1,46 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Listar Funcionários</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Funcionários</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-4">
         <h1>Funcionários</h1>
-        
-        <!-- Botão para adicionar novo funcionário -->
-        <a href="/funcionarios/novo" class="btn btn-primary mb-3">Adicionar Novo Funcionário</a>
-        
-        <!-- Tabela com a lista de funcionários -->
-        <table class="table table-striped">
+        <a href="/funcionarios/novo" class="btn btn-primary mb-3">Novo Funcionário</a>
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>CPF</th>
                     <th>Nome</th>
+                    <th>Cargo</th>
+                    <th>CPF</th>
+                    <th>Data de Nascimento</th>
+                    <th>Dependentes</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="funcionario : ${funcionarios}">
-                    <td th:text="${funcionario.id}">1</td>
-                    <td th:text="${funcionario.cpf}">000.000.000-00</td>
-                    <td th:text="${funcionario.nome}">Nome do Funcionário</td>
+                    <td th:text="${funcionario.id}"></td>
+                    <td th:text="${funcionario.nome}"></td>
+                    <td th:text="${funcionario.cargo}"></td>
+                    <td th:text="${funcionario.cpf}"></td>
+                    <td th:text="${funcionario.dataNascimento}"></td>
                     <td>
-                        <!-- Botões de ação -->
+                        <span th:each="dependente : ${funcionario.dependentes}" th:text="${dependente.nome + ' (' + dependente.parentesco + ')'}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/funcionarios/{id}/editar(id=${funcionario.id})}" class="btn btn-warning btn-sm">Editar</a>
                         <a th:href="@{/funcionarios/{id}(id=${funcionario.id})}" class="btn btn-info btn-sm">Detalhes</a>
-                        <a th:href="@{/funcionarios/editar/{id}(id=${funcionario.id})}" class="btn btn-warning btn-sm">Editar</a>
-                        <form th:action="@{/funcionarios/{id}(id=${funcionario.id})}" method="post" style="display:inline;">
-                            <input type="hidden" name="_method" value="delete">
-                            <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                        <form th:action="@{/funcionarios/{id}/deletar(id=${funcionario.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Deletar</button>
                         </form>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-        <!-- Botão de voltar -->
-        <a href="/" class="btn btn-secondary mt-3">Voltar</a>
     </div>
 </body>
 </html>

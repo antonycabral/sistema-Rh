@@ -6,55 +6,59 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h2>Editar Funcionário</h2>
-        <form th:action="@{/funcionarios/{id}/editar(id=${funcionarioDTO.id})}" method="post">
+        <h1>Editar Funcionário</h1>
+        <form th:action="@{/funcionarios/{id}/editar(id=${funcionarioDTO.id})}" th:object="${funcionarioDTO}" method="post">
             <div class="form-group">
-                <label for="nome">Nome</label>
-                <input type="text" id="nome" name="nome" class="form-control" th:value="${funcionarioDTO.nome}" required />
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" th:field="*{nome}" class="form-control" required/>
             </div>
             <div class="form-group">
-                <label for="cpf">CPF</label>
-                <input type="text" id="cpf" name="cpf" class="form-control" th:value="${funcionarioDTO.cpf}" required />
+                <label for="cargo">Cargo:</label>
+                <input type="text" id="cargo" th:field="*{cargo}" class="form-control" required/>
             </div>
             <div class="form-group">
-                <label for="cargo">Cargo</label>
-                <input type="text" id="cargo" name="cargo" class="form-control" th:value="${funcionarioDTO.cargo}" />
+                <label for="salario">Salário:</label>
+                <input type="number" id="salario" th:field="*{salario}" class="form-control" step="0.01" required/>
             </div>
             <div class="form-group">
-                <label for="salario">Salário</label>
-                <input type="text" id="salario" name="salario" class="form-control" th:value="${funcionarioDTO.salario}" />
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" th:field="*{cpf}" class="form-control" required/>
             </div>
             <div class="form-group">
-                <label for="dataNascimento">Data de Nascimento</label>
-                <input type="date" id="dataNascimento" name="dataNascimento" class="form-control" th:value="${funcionarioDTO.dataNascimento}" />
+                <label for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" id="dataNascimento" th:field="*{dataNascimento}" class="form-control" required/>
             </div>
             <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" class="form-control" th:value="${funcionarioDTO.email}" />
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" th:field="*{email}" class="form-control" required/>
             </div>
-            <h4>Dependentes</h4>
-            <div id="dependentes">
+
+            <!-- Dependentes -->
+            <h3>Dependentes</h3>
+            <div th:if="${funcionarioDTO.dependentes}">
                 <div th:each="dependente, iter : ${funcionarioDTO.dependentes}">
+                    <input type="hidden" th:field="*{dependentes[__${iter.index}__].id}" />
                     <div class="form-group">
-                        <label th:for="'dependenteNome_' + ${iter.index}">Nome do Dependente</label>
-                        <input type="text" th:id="'dependenteNome_' + ${iter.index}" th:name="'dependentes[' + ${iter.index} + '].nome'" class="form-control" th:value="${dependente.nome}" />
+                        <label for="dependenteNome">Nome:</label>
+                        <input type="text" th:id="'dependenteNome' + ${iter.index}" th:field="*{dependentes[__${iter.index}__].nome}" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <label th:for="'dependenteParentesco_' + ${iter.index}">Parentesco</label>
-                        <input type="text" th:id="'dependenteParentesco_' + ${iter.index}" th:name="'dependentes[' + ${iter.index} + '].parentesco'" class="form-control" th:value="${dependente.parentesco}" />
+                        <label for="dependenteParentesco">Parentesco:</label>
+                        <input type="text" th:id="'dependenteParentesco' + ${iter.index}" th:field="*{dependentes[__${iter.index}__].parentesco}" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <label th:for="'dependenteCpf_' + ${iter.index}">CPF</label>
-                        <input type="text" th:id="'dependenteCpf_' + ${iter.index}" th:name="'dependentes[' + ${iter.index} + '].cpf'" class="form-control" th:value="${dependente.cpf}" />
+                        <label for="dependenteCpf">CPF:</label>
+                        <input type="text" th:id="'dependenteCpf' + ${iter.index}" th:field="*{dependentes[__${iter.index}__].cpf}" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <label th:for="'dependenteDataNascimento_' + ${iter.index}">Data de Nascimento</label>
-                        <input type="date" th:id="'dependenteDataNascimento_' + ${iter.index}" th:name="'dependentes[' + ${iter.index} + '].dataNascimento'" class="form-control" th:value="${dependente.dataNascimento}" />
+                        <label for="dependenteDataNascimento">Data de Nascimento:</label>
+                        <input type="date" th:id="'dependenteDataNascimento' + ${iter.index}" th:field="*{dependentes[__${iter.index}__].dataNascimento}" class="form-control"/>
                     </div>
                 </div>
             </div>
+            
             <button type="submit" class="btn btn-primary">Salvar</button>
-            <a href="#" class="btn btn-secondary" onclick="history.back()">Voltar</a>
+            <a href="#" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 </body>
