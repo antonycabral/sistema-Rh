@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalhes do Funcionário</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Detalhes do Funcionário</h1>
+
+        <!-- Exibe detalhes do funcionário -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title" th:text="'Nome: ' + ${funcionario.nome}">Nome: Nome do Funcionário</h5>
+                <p class="card-text" th:text="'CPF: ' + ${funcionario.cpf}">CPF: 000.000.000-00</p>
+                <p class="card-text" th:text="'Cargo: ' + ${funcionario.cargo}">Cargo: Cargo do Funcionário</p>
+                <p class="card-text" th:text="'Salário: R$ ' + ${funcionario.salario}">Salário: R$ 0,00</p>
+                <p class="card-text" th:text="'Data de Nascimento: ' + ${funcionario.dataNascimento}">Data de Nascimento: 01/01/1970</p>
+                <p class="card-text" th:text="'Email: ' + ${funcionario.email}">Email: email@exemplo.com</p>
+
+                <h5>Dependentes</h5>
+                <ul>
+                    <li th:each="dependente : ${funcionario.dependentes}">
+                        <span th:text="${dependente.nome}">Nome do Dependente</span> - 
+                        <span th:text="${dependente.parentesco}">Parentesco</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Botão de voltar -->
+        <a href="/funcionarios" class="btn btn-secondary">Voltar</a>
+    </div>
+</body>
+</html>

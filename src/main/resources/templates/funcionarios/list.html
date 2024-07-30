@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Listar Funcionários</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Funcionários</h1>
+        
+        <!-- Botão para adicionar novo funcionário -->
+        <a href="/funcionarios/novo" class="btn btn-primary mb-3">Adicionar Novo Funcionário</a>
+        
+        <!-- Tabela com a lista de funcionários -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CPF</th>
+                    <th>Nome</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="funcionario : ${funcionarios}">
+                    <td th:text="${funcionario.id}">1</td>
+                    <td th:text="${funcionario.cpf}">000.000.000-00</td>
+                    <td th:text="${funcionario.nome}">Nome do Funcionário</td>
+                    <td>
+                        <!-- Botões de ação -->
+                        <a th:href="@{/funcionarios/{id}(id=${funcionario.id})}" class="btn btn-info btn-sm">Detalhes</a>
+                        <a th:href="@{/funcionarios/editar/{id}(id=${funcionario.id})}" class="btn btn-warning btn-sm">Editar</a>
+                        <form th:action="@{/funcionarios/{id}(id=${funcionario.id})}" method="post" style="display:inline;">
+                            <input type="hidden" name="_method" value="delete">
+                            <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Botão de voltar -->
+        <a href="/" class="btn btn-secondary mt-3">Voltar</a>
+    </div>
+</body>
+</html>

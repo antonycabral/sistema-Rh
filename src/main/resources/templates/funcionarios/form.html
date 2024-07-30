@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Adicionar Funcionário</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Adicionar Novo Funcionário</h1>
+        <form action="#" th:action="@{/funcionarios/novo}" th:object="${funcionarioDTO}" method="post">
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" class="form-control" th:value="${funcionarioDTO.nome}" required>
+            </div>
+            <div class="form-group">
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" name="cpf" class="form-control" th:value="${funcionarioDTO.cpf}" required>
+            </div>
+            <div class="form-group">
+                <label for="cargo">Cargo:</label>
+                <input type="text" id="cargo" name="cargo" class="form-control" th:value="${funcionarioDTO.cargo}" required>
+            </div>
+            <div class="form-group">
+                <label for="salario">Salário:</label>
+                <input type="number" id="salario" name="salario" class="form-control" th:value="${funcionarioDTO.salario}" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" id="dataNascimento" name="dataNascimento" class="form-control" th:value="${funcionarioDTO.dataNascimento}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" class="form-control" th:value="${funcionarioDTO.email}">
+            </div>
+
+            <!-- Se existirem dependentes -->
+            <div class="form-group">
+                <label>Dependentes:</label>
+                <div th:each="dep, iterStat : ${funcionarioDTO.dependentes}">
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="text" th:field="*{dependentes[__${iterStat.index}__].nome}" class="form-control" placeholder="Nome do Dependente" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" th:field="*{dependentes[__${iterStat.index}__].parentesco}" class="form-control" placeholder="Parentesco" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" th:field="*{dependentes[__${iterStat.index}__].cpf}" class="form-control" placeholder="CPF do Dependente" required>
+                        </div>
+                        <div class="col">
+                            <input type="date" th:field="*{dependentes[__${iterStat.index}__].dataNascimento}" class="form-control" placeholder="Data de Nascimento" required>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <button type="button" class="btn btn-secondary mt-2" id="add-dependente">Adicionar Dependente</button>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="/funcionarios" class="btn btn-secondary">Cancelar</a>
+        </form>
+        <script>
+            document.getElementById('add-dependente').addEventListener('click', function() {
+                let formGroup = document.querySelector('.form-group');
+                let index = document.querySelectorAll('.form-row').length;
+                formGroup.insertAdjacentHTML('beforeend', `
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="text" name="dependentes[${index}].nome" class="form-control" placeholder="Nome do Dependente" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="dependentes[${index}].parentesco" class="form-control" placeholder="Parentesco" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="dependentes[${index}].cpf" class="form-control" placeholder="CPF do Dependente" required>
+                        </div>
+                        <div class="col">
+                            <input type="date" name="dependentes[${index}].dataNascimento" class="form-control" placeholder="Data de Nascimento" required>
+                        </div>
+                    </div>
+                    <hr>
+                `);
+            });
+        </script>
+    </div>
+</body>
+</html>
