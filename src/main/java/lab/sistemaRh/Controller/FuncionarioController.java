@@ -86,4 +86,15 @@ public class FuncionarioController {
             .collect(Collectors.toList()));
         return dto;
     }
+
+    @GetMapping("/nome/{cpf}")
+    @ResponseBody
+    public String getNomeFuncionario(@PathVariable String cpf) {
+        Funcionario funcionario = funcionarioService.findByCpf(cpf);
+        if (funcionario != null) {
+            return funcionario.getNome();
+        } else {
+            return "Funcionário não encontrado";
+        }
+    }
 }

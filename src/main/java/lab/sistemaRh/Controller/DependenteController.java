@@ -1,20 +1,21 @@
 package lab.sistemaRh.Controller;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import lab.sistemaRh.DTO.DependenteDTO;
 import lab.sistemaRh.models.Dependente;
 import lab.sistemaRh.service.DependenteService;
+import lab.sistemaRh.service.FuncionarioService;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 
 
 @Controller
@@ -24,53 +25,76 @@ public class DependenteController {
     @Autowired
     private DependenteService dependenteService;
 
+    @Autowired
+    private FuncionarioService funcionarioService;
+
     @GetMapping
-    public String listAll(Model model) {
-        model.addAttribute("dependentes", dependenteService.findAll());
+    public String listarDependentes(Model model) {
+        List<Dependente> dependentes = dependenteService.findAll();
+        model.addAttribute("dependentes", dependentes);
         return "dependentes/list";
     }
 
-    @GetMapping("/new")
-    public String createForm(Model model) {
-        model.addAttribute("dependente", new DependenteDTO());
+    @GetMapping("/novo")
+    public String mostrarFormularioCadastro(Model model) {
+        model.addAttribute("funcionarioCpf", "");
+        model.addAttribute("nome", "");
+        model.addAttribute("parentesco", "");
+        model.addAttribute("cpfDependente", "");
+        model.addAttribute("dataNascimento", "");
         return "dependentes/form";
     }
 
-    @PostMapping
-    public String save(@ModelAttribute DependenteDTO dependenteDTO) {
-        // Conversão DTO para Entidade e salvamento
-        Dependente dependente = new Dependente();
-        // mapear atributos do DTO para a entidade Dependente
-        dependenteService.save(dependente);
+    @PostMapping("/novo")
+    public String salvarDependente(
+        @RequestParam String cpfFuncionario,
+        @RequestParam String nome,
+        @RequestParam String parentesco,
+        @RequestParam String cpfDependente,
+        @RequestParam String dataNascimento,
+        Model model
+    ) {
+        LocalDate dataNasc = LocalDate.parse(dataNascimento);
+        dependenteService.createDependente(cpfFuncionario, nome, parentesco, cpfDependente, dataNasc);
         return "redirect:/dependentes";
     }
 
     @GetMapping("/{id}")
-    public String details(@PathVariable Long id, Model model) {
-        model.addAttribute("dependente", dependenteService.findById(id));
-        return "dependentes/details";
+    public String mostrarDetalhesDependente(@PathVariable Long id, Model model) {
+        Dependente dependente = dependenteService.getDependenteById(id);
+        if (dependente != null) {
+            model.addAttribute("dependente", dependente);
+            model.addAttribute("funcionario", dependente.getFuncionario());
+        }
+        return "dependentes/detalhes";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model) {
-        Dependente dependente = dependenteService.findById(id);
-        DependenteDTO dependenteDTO = new DependenteDTO();
-        // mapear atributos da entidade para o DTO
-        model.addAttribute("dependente", dependenteDTO);
-        return "dependentes/edit";
+    @GetMapping("/{id}/editar")
+    public String editarDependente(@PathVariable("id") Long id, Model model) {
+        Dependente dependente = dependenteService.getDependenteById(id);
+        model.addAttribute("dependente", dependente);
+        return "dependentes/editar";
     }
 
-    @PostMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute DependenteDTO dependenteDTO) {
-        Dependente dependente = dependenteService.findById(id);
-        // Atualizar atributos do Dependente com dados do DTO
-        dependenteService.save(dependente);
+    @PostMapping("/{id}/atualizar")
+public String atualizarDependente(@PathVariable("id") Long id,
+                                @RequestParam("nome") String nome,
+                                @RequestParam("parentesco") String parentesco,
+                            @RequestParam("dataNascimento") LocalDate dataNascimento) {
+    Dependente dependente = dependenteService.getDependenteById(id);
+    if (dependente != null) {
+        dependente.setNome(nome);
+        dependente.setParentesco(parentesco);
+        dependente.setDataNascimento(dataNascimento);
+        dependenteService.saveDependente(dependente);
+    }
+    return "redirect:/dependentes";
+}
+
+    @GetMapping("/{id}/excluir")
+    public String excluirDependente(@PathVariable("id") Long id) {
+        dependenteService.deleteDependente(id);
         return "redirect:/dependentes";
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        dependenteService.delete(id);
-        return "redirect:/dependentes";
-    }
 }

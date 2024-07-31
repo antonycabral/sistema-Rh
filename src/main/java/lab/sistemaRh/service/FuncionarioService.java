@@ -101,4 +101,8 @@ public class FuncionarioService {
         dependente.setDataNascimento(dependenteDTO.getDataNascimento());
         return dependente;
     }
+
+    public Funcionario findByCpf(String cpf) {
+        return funcionarioRepository.findByCpf(cpf).orElse(null);
+    }
 }

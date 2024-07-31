@@ -97,6 +97,4 @@ public class Dependente {
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
     }
-    
-    
 }
